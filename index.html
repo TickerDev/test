@@ -179,8 +179,6 @@
     box-shadow: inset 0 0 0 1.5px var(--danger);
   }
   .tower.selected .pole { background: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
-  .tower.hint-source .pole { background: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
-  .tower.hint-target .base-line { background: var(--success); box-shadow: 0 0 12px rgba(52,211,153,.3); }
 
   .tower-label {
     font-size: .65rem;
@@ -305,7 +303,6 @@
   </div>
   <button class="btn btn-primary" id="new-game">Start</button>
   <button class="btn btn-ghost" id="undo-btn" disabled>Undo</button>
-  <button class="btn btn-ghost" id="hint-btn">Hint</button>
 </div>
 
 <div class="stats">
@@ -364,7 +361,7 @@ function initGame() {
   $('timer').textContent = '0:00';
   $('undo-btn').disabled = true;
   $('win-overlay').classList.remove('show');
-  clearHints();
+
   render();
 }
 
@@ -611,7 +608,7 @@ function tryMove(fromIdx, toIdx) {
   $('move-count').textContent = moves;
   $('undo-btn').disabled = false;
   selected = null;
-  clearHints();
+
   render();
   if (checkWin()) {
     clearInterval(timerInterval);
@@ -620,7 +617,7 @@ function tryMove(fromIdx, toIdx) {
 }
 
 function handleClick(ti) {
-  clearHints();
+
   if (selected === null) {
     if (towers[ti].length === 0) return;
     selected = ti;
@@ -642,7 +639,7 @@ function undo() {
   $('move-count').textContent = moves;
   if (history.length === 0) $('undo-btn').disabled = true;
   selected = null;
-  clearHints();
+
   render();
 }
 
@@ -665,57 +662,10 @@ function showWin() {
   $('win-overlay').classList.add('show');
 }
 
-// ── Hint system ──
-function getOptimalMove() {
-  const state = towers.map(t => [...t]);
-  return solveStep(state, diskCount, 0, 2, 1);
-}
-
-function solveStep(state, n, from, to, aux) {
-  if (n === 0) return null;
-  const diskPos = findDisk(state, n);
-  if (diskPos === to) {
-    return solveStep(state, n - 1, from === to ? aux : from, to, from === to ? from : aux);
-  }
-  const actualAux = 3 - diskPos - to;
-  const subResult = solveStep(state, n - 1, diskPos === from ? from : diskPos, actualAux, to);
-  if (subResult !== null) return subResult;
-  return { from: diskPos, to: to };
-}
-
-function findDisk(state, size) {
-  for (let i = 0; i < 3; i++) {
-    if (state[i].includes(size)) return i;
-  }
-  return -1;
-}
-
-function clearHints() {
-  document.querySelectorAll('.tower').forEach(t => {
-    t.classList.remove('hint-source', 'hint-target');
-  });
-}
-
-function showHint() {
-  clearHints();
-  if (checkWin()) return;
-  if (diskCount > 20) return; // too deep for recursion
-  const move = getOptimalMove();
-  if (!move) return;
-  selected = null;
-  render();
-  setTimeout(() => {
-    const towerEls = document.querySelectorAll('.tower');
-    towerEls[move.from]?.classList.add('hint-source');
-    towerEls[move.to]?.classList.add('hint-target');
-  }, 50);
-}
-
 // ── Events ──
 $('new-game').addEventListener('click', initGame);
 $('play-again').addEventListener('click', initGame);
 $('undo-btn').addEventListener('click', undo);
-$('hint-btn').addEventListener('click', showHint);
 $('disk-count').addEventListener('keydown', e => { if (e.key === 'Enter') initGame(); });
 
 document.addEventListener('keydown', e => {
@@ -724,7 +674,6 @@ document.addEventListener('keydown', e => {
   else if (e.key === '2' || e.key === 'b') handleClick(1);
   else if (e.key === '3' || e.key === 'c') handleClick(2);
   else if (e.key === 'u' || (e.ctrlKey && e.key === 'z')) { e.preventDefault(); undo(); }
-  else if (e.key === 'h') showHint();
   else if (e.key === 'n') initGame();
 });
 
