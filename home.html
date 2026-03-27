@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Yee's Classroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root {
+    --surface-lowest: #ffffff;
+    --surface: #f8f9fa;
+    --surface-low: #f3f4f5;
+    --surface-container: #edeeef;
+    --surface-high: #e1e3e4;
+    --on-surface: #191c1d;
+    --on-surface-variant: #414754;
+    --primary: #005bbf;
+    --primary-container: #1a73e8;
+    --on-primary: #ffffff;
+    --outline-variant: rgba(193,198,214,.15);
+    --ambient-shadow: rgba(25,28,29,.06);
+    --radius-lg: 2rem;
+    --radius-xl: 3rem;
+    --radius-full: 9999px;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--on-surface);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Navbar ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 2.75rem;
+  }
+  nav .brand {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--on-surface);
+    text-decoration: none;
+    letter-spacing: -.02em;
+  }
+  nav .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  nav .nav-links a {
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    transition: color .2s;
+    letter-spacing: -.01em;
+  }
+  nav .nav-links a:hover { color: var(--primary); }
+  nav .nav-links a.active { color: var(--primary); font-weight: 600; }
+
+  /* ── Hero ── */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2.75rem 5rem;
+    flex: 1;
+  }
+  .hero-eyebrow {
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -.035em;
+    line-height: 1.08;
+    color: var(--on-surface);
+    max-width: 680px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--primary), var(--primary-container));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    margin-top: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--on-surface-variant);
+    max-width: 520px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: .75rem;
+    margin-top: 2.5rem;
+  }
+
+  .btn {
+    padding: .7rem 1.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: .9rem;
+    transition: all .2s;
+    letter-spacing: -.01em;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+    box-shadow: 0 2px 40px var(--ambient-shadow);
+  }
+  .btn-primary:hover {
+    background: var(--primary-container);
+    box-shadow: 0 4px 48px rgba(25,28,29,.1);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--primary);
+    box-shadow: inset 0 0 0 1.5px var(--outline-variant);
+  }
+  .btn-ghost:hover {
+    box-shadow: inset 0 0 0 1.5px rgba(0,91,191,.25);
+    background: rgba(0,91,191,.04);
+  }
+
+  /* ── Features ── */
+  .features {
+    background: var(--surface-lowest);
+    padding: 5rem 2.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .features-eyebrow {
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 1rem;
+  }
+  .features h2 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--on-surface);
+    margin-bottom: 3rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 960px;
+    width: 100%;
+  }
+  .feature-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 48px var(--ambient-shadow);
+  }
+  .feature-card h3 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin-bottom: .5rem;
+    color: var(--on-surface);
+  }
+  .feature-card p {
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--on-surface-variant);
+  }
+  .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 2.5rem 2.75rem 2rem;
+    text-align: center;
+    font-size: .75rem;
+    color: var(--on-surface-variant);
+    letter-spacing: .01em;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+  }
+  footer .claude-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    nav { padding: .75rem 1.5rem; }
+    nav .nav-links { gap: 1.25rem; }
+    .hero { padding: 5rem 1.5rem 3rem; }
+    .hero h1 { font-size: 2.25rem; }
+    .features { padding: 3rem 1.5rem; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="brand">Mr. Yee's Classroom</a>
+  <ul class="nav-links">
+    <li><a href="home.html" class="active">Home</a></li>
+    <li><a href="index.html">Game</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <span class="hero-eyebrow">AP Computer Science A</span>
+  <h1>Learn CS through <span>play.</span></h1>
+  <p>Interactive puzzles and hands-on challenges designed for Mr. Yee's AP CSA students. Build algorithmic thinking one move at a time.</p>
+  <div class="hero-actions">
+    <a href="index.html" class="btn btn-primary">Play Tower of Hanoi</a>
+    <a href="pricing.html" class="btn btn-ghost">View Pricing</a>
+  </div>
+</section>
+
+<section class="features">
+  <span class="features-eyebrow">Why this works</span>
+  <h2>Built for the classroom</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">&#x1F9E9;</span>
+      <h3>Algorithmic Thinking</h3>
+      <p>Tower of Hanoi teaches recursion, divide-and-conquer, and optimal substructure in a way textbooks simply can't.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">&#x1F3AF;</span>
+      <h3>Instant Feedback</h3>
+      <p>Move counters and minimum-move targets let students measure their efficiency and strive for optimal solutions.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">&#x1F4BB;</span>
+      <h3>Zero Setup</h3>
+      <p>No accounts, no installs, no dependencies. Just open the browser and start learning. Works on any device.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Built by Dor Elboim & <img class="claude-icon" src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png" alt="Claude" width="16" height="16">Claude Opus (1M Context)</footer>
+
+</body>
+</html>
