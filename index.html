@@ -52,10 +52,48 @@
     -webkit-user-select: none;
   }
 
+  /* ── Navbar ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 2.75rem;
+    width: 100%;
+  }
+  nav .brand {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--on-surface);
+    text-decoration: none;
+    letter-spacing: -.02em;
+  }
+  nav .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  nav .nav-links a {
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    transition: color .2s;
+    letter-spacing: -.01em;
+  }
+  nav .nav-links a:hover { color: var(--primary); }
+  nav .nav-links a.active { color: var(--primary); font-weight: 600; }
+
   /* ── Header ── */
   header {
     text-align: center;
-    padding: 3.5rem 2.75rem 0;
+    padding: 2.5rem 2.75rem 0;
   }
   header h1 {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -400,7 +438,9 @@
 
   /* ── Responsive ── */
   @media (max-width: 600px) {
-    header { padding: 2.75rem 1.5rem 0; }
+    nav { padding: .75rem 1.5rem; }
+    nav .nav-links { gap: 1.25rem; }
+    header { padding: 2rem 1.5rem 0; }
     header h1 { font-size: 2.25rem; }
     .board { gap: .6rem; padding: 0 1rem 2.75rem; }
     .tower { min-height: 240px; border-radius: 1.25rem; }
@@ -410,6 +450,16 @@
 </style>
 </head>
 <body>
+
+<nav>
+  <a href="home.html" class="brand">Mr. Yee's Classroom</a>
+  <ul class="nav-links">
+    <li><a href="home.html">Home</a></li>
+    <li><a href="index.html" class="active">Game</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
 
 <header>
   <h1>Tower of Hanoi</h1>
