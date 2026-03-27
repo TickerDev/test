@@ -347,6 +347,14 @@
     color: var(--on-surface-variant);
     letter-spacing: .01em;
     line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+  }
+  footer .claude-icon {
+    display: inline-flex;
+    flex-shrink: 0;
   }
 
   /* ── Responsive ── */
@@ -388,7 +396,7 @@
 
 <div class="board" id="board"></div>
 
-<footer>Built by Dor Elboim & Claude</footer>
+<footer><span class="claude-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.312 11.592l-4.104 2.148-1.632-2.64L16.2 8.508l.112 3.084zM11.088 17.1l1.2-4.596 2.592 1.308-3.792 3.288zM8.904 9.264l2.064 3.348-4.596 1.2 2.532-4.548zM13.8 6.852l-3.792 3.3 1.2-4.608L13.8 6.852zM7.284 15.576l4.104-2.148 1.632 2.64-5.624 2.592-.112-3.084zM15.12 7.5l-2.064-3.348 4.596-1.2L15.12 7.5zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0z" fill="#D97757"/></svg></span>Built by Dor Elboim & Claude Opus (1M Context)</footer>
 
 <div class="win-overlay" id="win-overlay">
   <h2>Solved</h2>
