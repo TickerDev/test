@@ -238,6 +238,53 @@
     box-shadow: 0 8px 24px rgba(0,0,0,.5);
   }
 
+  /* ── Entrance animation ── */
+  .disk.enter {
+    animation: diskEnter .4s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes diskEnter {
+    from { opacity: 0; transform: translateY(-30px) scaleX(.6); }
+    to   { opacity: 1; transform: translateY(0) scaleX(1); }
+  }
+
+  /* ── Landing bounce ── */
+  .disk.land {
+    animation: diskLand .35s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes diskLand {
+    0%   { transform: scaleY(.85) scaleX(1.08); }
+    40%  { transform: scaleY(1.08) scaleX(.96); }
+    70%  { transform: scaleY(.97) scaleX(1.02); }
+    100% { transform: scaleY(1) scaleX(1); }
+  }
+
+  /* ── Flying disk (move animation) ── */
+  .disk-fly {
+    position: fixed;
+    height: 24px;
+    border-radius: 6px;
+    z-index: 500;
+    pointer-events: none;
+    will-change: transform;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  }
+
+  /* ── Confetti ── */
+  .confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    z-index: 200;
+    pointer-events: none;
+    animation: confettiFall var(--fall-duration, 2.5s) cubic-bezier(.25,.46,.45,.94) forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--drift-x, 50px), var(--drift-y, 600px)) rotate(var(--spin, 720deg)) scale(.4); }
+  }
+
   /* Drag ghost */
   .drag-ghost {
     position: fixed;
@@ -284,6 +331,7 @@
     header h1 { font-size: 1.25rem; }
     .tower { min-height: 240px; }
     .disk { height: 20px; }
+    .disk-fly { height: 20px; }
   }
 </style>
 </head>
@@ -366,6 +414,14 @@ function initGame() {
   $('win-overlay').classList.remove('show');
   clearHints();
   render();
+
+  // Staggered entrance animation for disks
+  const diskEls = document.querySelectorAll('.tower .disk');
+  diskEls.forEach((d, i) => {
+    d.classList.add('enter');
+    d.style.animationDelay = (i * 60) + 'ms';
+    d.addEventListener('animationend', () => { d.classList.remove('enter'); d.style.animationDelay = ''; }, { once: true });
+  });
 }
 
 function startTimer() {
@@ -594,9 +650,13 @@ function handleTouchEnd(e) {
   touchDrag = null;
 }
 
+// ── Animation state ──
+let animating = false;
+
 // ── Move logic ──
 function tryMove(fromIdx, toIdx) {
   if (fromIdx === toIdx) return;
+  if (animating) return;
   const from = towers[fromIdx];
   const to = towers[toIdx];
   const disk = from[from.length - 1];
@@ -604,22 +664,105 @@ function tryMove(fromIdx, toIdx) {
   if (to.length > 0 && to[to.length - 1] < disk) return;
 
   startTimer();
-  history.push({ from: fromIdx, to: toIdx });
-  from.pop();
-  to.push(disk);
-  moves++;
-  $('move-count').textContent = moves;
-  $('undo-btn').disabled = false;
-  selected = null;
-  clearHints();
-  render();
-  if (checkWin()) {
-    clearInterval(timerInterval);
-    showWin();
+
+  // Find source disk element position before state change
+  const towerEls = document.querySelectorAll('.tower');
+  const srcDiskEl = towerEls[fromIdx]?.querySelector('.disk.top-disk');
+  const dstContainer = towerEls[toIdx]?.querySelector('.disks');
+
+  if (srcDiskEl && dstContainer) {
+    animating = true;
+    const srcRect = srcDiskEl.getBoundingClientRect();
+    const dstTowerRect = towerEls[toIdx].getBoundingClientRect();
+    const boardRect = $('board').getBoundingClientRect();
+
+    // Calculate target position (center of destination tower, at the stack height)
+    const dstStackHeight = to.length * 26 + 31; // where the new disk will sit
+    const dstX = dstTowerRect.left + dstTowerRect.width / 2 - srcRect.width / 2;
+    const dstY = dstTowerRect.bottom - dstStackHeight - 24;
+
+    // Lift height above the poles
+    const liftY = boardRect.top - 10;
+
+    // Create flying disk
+    const fly = document.createElement('div');
+    fly.className = 'disk-fly';
+    fly.style.width = srcRect.width + 'px';
+    fly.style.background = diskColor(disk);
+    fly.style.left = srcRect.left + 'px';
+    fly.style.top = srcRect.top + 'px';
+    document.body.appendChild(fly);
+
+    // Hide original
+    srcDiskEl.style.opacity = '0';
+
+    // Phase 1: lift up
+    const dur1 = 120, dur2 = 180, dur3 = 120;
+    fly.style.transition = `left ${dur2}ms cubic-bezier(.22,1,.36,1), top ${dur1}ms cubic-bezier(.33,1,.68,1)`;
+    requestAnimationFrame(() => {
+      fly.style.top = liftY + 'px';
+
+      // Phase 2: move across after lift
+      setTimeout(() => {
+        fly.style.left = dstX + 'px';
+
+        // Phase 3: drop down after crossing
+        setTimeout(() => {
+          fly.style.transition = `top ${dur3}ms cubic-bezier(.55,.06,.68,.19)`;
+          fly.style.top = dstY + 'px';
+
+          // Complete: update state and render
+          setTimeout(() => {
+            fly.remove();
+            history.push({ from: fromIdx, to: toIdx });
+            from.pop();
+            to.push(disk);
+            moves++;
+            $('move-count').textContent = moves;
+            $('undo-btn').disabled = false;
+            selected = null;
+            clearHints();
+            animating = false;
+            render();
+
+            // Add landing bounce to the newly placed disk
+            requestAnimationFrame(() => {
+              const newTowerEls = document.querySelectorAll('.tower');
+              const landedDisk = newTowerEls[toIdx]?.querySelector('.disk.top-disk');
+              if (landedDisk) {
+                landedDisk.classList.add('land');
+                landedDisk.addEventListener('animationend', () => landedDisk.classList.remove('land'), { once: true });
+              }
+            });
+
+            if (checkWin()) {
+              clearInterval(timerInterval);
+              showWin();
+            }
+          }, dur3);
+        }, dur2);
+      }, dur1);
+    });
+  } else {
+    // Fallback: no animation
+    history.push({ from: fromIdx, to: toIdx });
+    from.pop();
+    to.push(disk);
+    moves++;
+    $('move-count').textContent = moves;
+    $('undo-btn').disabled = false;
+    selected = null;
+    clearHints();
+    render();
+    if (checkWin()) {
+      clearInterval(timerInterval);
+      showWin();
+    }
   }
 }
 
 function handleClick(ti) {
+  if (animating) return;
   clearHints();
   if (selected === null) {
     if (towers[ti].length === 0) return;
@@ -663,6 +806,28 @@ function showWin() {
   const minStr = min !== Infinity ? ` Minimum was ${min.toLocaleString()}.` : '';
   $('win-msg').textContent = `${rating} ${moves.toLocaleString()} moves in ${m}:${s}.${minStr}`;
   $('win-overlay').classList.add('show');
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const colors = ['#a78bfa','#f87171','#fbbf24','#34d399','#38bdf8','#f472b6','#fb923c','#e879f9','#a3e635'];
+  const count = 60;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.left = (Math.random() * 100) + 'vw';
+    piece.style.top = '-10px';
+    piece.style.setProperty('--drift-x', (Math.random() * 200 - 100) + 'px');
+    piece.style.setProperty('--drift-y', (window.innerHeight + 50) + 'px');
+    piece.style.setProperty('--spin', (Math.random() * 1080 - 540) + 'deg');
+    piece.style.setProperty('--fall-duration', (2 + Math.random() * 1.5) + 's');
+    piece.style.animationDelay = (Math.random() * 0.6) + 's';
+    piece.style.width = (6 + Math.random() * 6) + 'px';
+    piece.style.height = (6 + Math.random() * 6) + 'px';
+    document.body.appendChild(piece);
+    piece.addEventListener('animationend', () => piece.remove());
+  }
 }
 
 // ── Hint system ──
