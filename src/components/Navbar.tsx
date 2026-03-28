@@ -135,9 +135,7 @@ export function Navbar() {
           <NavDropdown label="AP CSA" isActive={location.pathname.startsWith('/units')} heading="Units" items={apCsaUnits} />
           <NavDropdown label="CS III" isActive={location.pathname.startsWith('/cs3')} heading="Units" items={cs3Units} />
           <NavDropdown label="Games" isActive={isGamePage} heading="Play & Learn" items={games} />
-          <li>
-            <Link to="/contact" className={location.pathname === '/contact' ? 'active' : undefined}>Contact</Link>
-          </li>
+
         </ul>
 
         {/* Hamburger button */}
@@ -157,7 +155,6 @@ export function Navbar() {
         <MobileSection heading="AP CSA" items={apCsaUnits} />
         <MobileSection heading="CS III" items={cs3Units} />
         <MobileSection heading="Games" items={games} />
-        <Link to="/contact" className="mobile-link mobile-link-top">Contact</Link>
       </div>
     </>
   )

@@ -22,7 +22,6 @@ export function Footer() {
                 <li><Link to="/game">Tower of Hanoi</Link></li>
                 <li><Link to="/binary-game">Binary Game</Link></li>
                 <li><Link to="/binary-tetris">Binary Tetris</Link></li>
-                <li><Link to="/contact">Contact</Link></li>
               </ul>
             </div>
 

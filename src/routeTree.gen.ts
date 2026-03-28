@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as GameRouteImport } from './routes/game'
-import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BinaryTetrisRouteImport } from './routes/binary-tetris'
 import { Route as BinaryGameRouteImport } from './routes/binary-game'
 import { Route as IndexRouteImport } from './routes/index'
@@ -26,11 +25,6 @@ const TermsRoute = TermsRouteImport.update({
 const GameRoute = GameRouteImport.update({
   id: '/game',
   path: '/game',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BinaryTetrisRoute = BinaryTetrisRouteImport.update({
@@ -63,7 +57,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/binary-game': typeof BinaryGameRoute
   '/binary-tetris': typeof BinaryTetrisRoute
-  '/contact': typeof ContactRoute
   '/game': typeof GameRoute
   '/terms': typeof TermsRoute
   '/cs3/$unitId': typeof Cs3UnitIdRoute
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/binary-game': typeof BinaryGameRoute
   '/binary-tetris': typeof BinaryTetrisRoute
-  '/contact': typeof ContactRoute
   '/game': typeof GameRoute
   '/terms': typeof TermsRoute
   '/cs3/$unitId': typeof Cs3UnitIdRoute
@@ -84,7 +76,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/binary-game': typeof BinaryGameRoute
   '/binary-tetris': typeof BinaryTetrisRoute
-  '/contact': typeof ContactRoute
   '/game': typeof GameRoute
   '/terms': typeof TermsRoute
   '/cs3/$unitId': typeof Cs3UnitIdRoute
@@ -96,7 +87,6 @@ export interface FileRouteTypes {
     | '/'
     | '/binary-game'
     | '/binary-tetris'
-    | '/contact'
     | '/game'
     | '/terms'
     | '/cs3/$unitId'
@@ -106,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/binary-game'
     | '/binary-tetris'
-    | '/contact'
     | '/game'
     | '/terms'
     | '/cs3/$unitId'
@@ -116,7 +105,6 @@ export interface FileRouteTypes {
     | '/'
     | '/binary-game'
     | '/binary-tetris'
-    | '/contact'
     | '/game'
     | '/terms'
     | '/cs3/$unitId'
@@ -127,7 +115,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BinaryGameRoute: typeof BinaryGameRoute
   BinaryTetrisRoute: typeof BinaryTetrisRoute
-  ContactRoute: typeof ContactRoute
   GameRoute: typeof GameRoute
   TermsRoute: typeof TermsRoute
   Cs3UnitIdRoute: typeof Cs3UnitIdRoute
@@ -148,13 +135,6 @@ declare module '@tanstack/react-router' {
       path: '/game'
       fullPath: '/game'
       preLoaderRoute: typeof GameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/binary-tetris': {
@@ -199,7 +179,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BinaryGameRoute: BinaryGameRoute,
   BinaryTetrisRoute: BinaryTetrisRoute,
-  ContactRoute: ContactRoute,
   GameRoute: GameRoute,
   TermsRoute: TermsRoute,
   Cs3UnitIdRoute: Cs3UnitIdRoute,
