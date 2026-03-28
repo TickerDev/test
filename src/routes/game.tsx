@@ -36,7 +36,6 @@ function GamePage() {
   const [history, setHistory] = useState<{ from: number; to: number }[]>([])
   const [seconds, setSeconds] = useState(0)
   const [showWin, setShowWin] = useState(false)
-  const [showWelcome, setShowWelcome] = useState(false)
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const timerStartedRef = useRef(false)
@@ -52,17 +51,7 @@ function GamePage() {
   const towersRef = useRef(towers)
   towersRef.current = towers
 
-  // Welcome popup (first visit)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !localStorage.getItem('hanoi-welcomed')) {
-      setShowWelcome(true)
-    }
-  }, [])
 
-  function dismissWelcome() {
-    localStorage.setItem('hanoi-welcomed', '1')
-    setShowWelcome(false)
-  }
 
   // Timer effect
   useEffect(() => {
@@ -244,7 +233,7 @@ function GamePage() {
 
   function handleDrop(e: React.DragEvent, ti: number) {
     e.preventDefault()
-    ;(e.currentTarget as HTMLElement).classList.remove('drop-target', 'drop-invalid')
+      ; (e.currentTarget as HTMLElement).classList.remove('drop-target', 'drop-invalid')
     if (!draggingRef.current) return
     tryMove(draggingRef.current.towerIdx, ti)
     cleanupDrag()
@@ -455,31 +444,31 @@ function GamePage() {
                       onDragStart={
                         isTop
                           ? (e) =>
-                              handleDragStart(
-                                e,
-                                ti,
-                                size,
-                                c,
-                                e.currentTarget as HTMLElement
-                              )
+                            handleDragStart(
+                              e,
+                              ti,
+                              size,
+                              c,
+                              e.currentTarget as HTMLElement
+                            )
                           : undefined
                       }
                       onDragEnd={
                         isTop
                           ? (e) =>
-                              handleDragEnd(e.currentTarget as HTMLElement)
+                            handleDragEnd(e.currentTarget as HTMLElement)
                           : undefined
                       }
                       onTouchStart={
                         isTop
                           ? (e) =>
-                              handleTouchStart(
-                                e,
-                                ti,
-                                size,
-                                c,
-                                e.currentTarget as HTMLElement
-                              )
+                            handleTouchStart(
+                              e,
+                              ti,
+                              size,
+                              c,
+                              e.currentTarget as HTMLElement
+                            )
                           : undefined
                       }
                     />
@@ -491,19 +480,7 @@ function GamePage() {
         })}
       </div>
 
-      {/* Welcome overlay */}
-      <div className={`welcome-overlay${showWelcome ? ' show' : ''}`}>
-        <div className="welcome-card">
-          <h2>Welcome to Mr. Yee's AP CSA Classroom!</h2>
-          <p>
-            Move all the disks from the first peg to the last. A larger disk can
-            never be placed on top of a smaller one.
-          </p>
-          <button className="btn btn-primary" onClick={dismissWelcome}>
-            Let's Go
-          </button>
-        </div>
-      </div>
+
 
       {/* Win overlay */}
       <div className={`win-overlay${showWin ? ' show' : ''}`}>
