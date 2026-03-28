@@ -7,11 +7,7 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [
-    tanstackStart({
-      spa: {
-        enabled: true,
-      }
-    }),
+    tanstackStart(),
     viteReact(),
   ],
 })
