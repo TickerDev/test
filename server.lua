@@ -17,3 +17,8 @@ AddEventHandler('counter:add', function()
         }
     })
 end)
+
+AddEventHandler('playerDropped', function()
+    local src = source
+    playerCounts[src] = nil
+end)
